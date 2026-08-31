@@ -1,0 +1,1853 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Harshvardhan Calculator</title>
+
+    <style>
+
+        /* ================================
+           RESET
+        ================================= */
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Segoe UI", Arial, sans-serif;
+        }
+
+        html,
+        body {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            overflow: hidden;
+
+            background:
+                radial-gradient(
+                    circle at top left,
+                    #263d68 0%,
+                    #111827 40%,
+                    #060a11 100%
+                );
+
+            color: white;
+        }
+
+
+        /* ================================
+           MAIN APP
+        ================================= */
+
+        .app {
+            width: 100vw;
+            height: 100vh;
+
+            margin: 0;
+            padding: 0;
+
+            display: flex;
+            flex-direction: column;
+        }
+
+
+        /* ================================
+           HEADER
+        ================================= */
+
+        .header {
+            width: 100%;
+            height: 70px;
+            min-height: 70px;
+
+            margin: 0;
+            padding: 0 28px;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            background: rgba(5, 9, 16, 0.98);
+
+            border: none;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+        }
+
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 13px;
+        }
+
+
+        .logo {
+            width: 45px;
+            height: 45px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            border-radius: 12px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #4f8cff,
+                    #7455ff
+                );
+
+            color: white;
+
+            font-size: 22px;
+            font-weight: bold;
+
+            box-shadow:
+                0 5px 20px rgba(79,140,255,0.25);
+        }
+
+
+        .brand-text h1 {
+            font-size: 24px;
+            font-weight: 600;
+            line-height: 1;
+        }
+
+
+        .brand-text p {
+            margin-top: 5px;
+
+            color: #7d899c;
+
+            font-size: 11px;
+        }
+
+
+        .theme-button {
+            width: 42px;
+            height: 42px;
+
+            border: none;
+            border-radius: 11px;
+
+            background: #192231;
+
+            color: white;
+
+            font-size: 18px;
+
+            cursor: pointer;
+
+            transition: 0.2s;
+        }
+
+
+        .theme-button:hover {
+            background: #2b3a52;
+            transform: translateY(-2px);
+        }
+
+
+        /* ================================
+           MAIN CONTENT
+        ================================= */
+
+        .content {
+            flex: 1;
+
+            width: 100%;
+
+            min-height: 0;
+
+            display: flex;
+
+            gap: 20px;
+
+            padding: 15px 20px;
+        }
+
+
+        /* ================================
+           CALCULATOR AREA
+        ================================= */
+
+        .calculator-area {
+            flex: 1;
+
+            min-width: 0;
+            min-height: 0;
+
+            display: flex;
+
+            align-items: stretch;
+            justify-content: center;
+        }
+
+
+        .calculator {
+            width: min(850px, 100%);
+            height: 100%;
+
+            min-height: 0;
+
+            padding: 18px;
+
+            display: flex;
+            flex-direction: column;
+
+            background: rgba(14, 20, 30, 0.98);
+
+            border:
+                1px solid rgba(255,255,255,0.08);
+
+            border-radius: 20px;
+
+            box-shadow:
+                0 25px 60px rgba(0,0,0,0.45);
+        }
+
+
+        /* ================================
+           DISPLAY
+        ================================= */
+
+        .display {
+            width: 100%;
+
+            height: 135px;
+            min-height: 135px;
+
+            margin-bottom: 14px;
+
+            padding: 20px;
+
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+
+            background:
+                linear-gradient(
+                    145deg,
+                    #070c13,
+                    #111b27
+                );
+
+            border:
+                1px solid rgba(255,255,255,0.05);
+
+            border-radius: 16px;
+
+            overflow: hidden;
+        }
+
+
+        .previous {
+            min-height: 25px;
+
+            text-align: right;
+
+            color: #69778b;
+
+            font-size: 16px;
+
+            white-space: nowrap;
+
+            overflow: hidden;
+        }
+
+
+        .current {
+            margin-top: 5px;
+
+            text-align: right;
+
+            color: white;
+
+            font-size: clamp(36px, 5vw, 60px);
+
+            font-weight: 500;
+
+            white-space: nowrap;
+
+            overflow-x: auto;
+
+            scrollbar-width: none;
+        }
+
+
+        /* ================================
+           BUTTON GRID
+        ================================= */
+
+        .buttons {
+            flex: 1;
+
+            min-height: 0;
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(5, 1fr);
+
+            grid-template-rows:
+                repeat(7, 1fr);
+
+            gap: 9px;
+        }
+
+
+        .calc-btn {
+            border: none;
+
+            border-radius: 13px;
+
+            background: #1b2635;
+
+            color: white;
+
+            font-size:
+                clamp(16px, 1.8vw, 22px);
+
+            cursor: pointer;
+
+            transition:
+                background 0.15s,
+                transform 0.1s;
+
+            box-shadow:
+                inset 0 1px rgba(255,255,255,0.04);
+        }
+
+
+        .calc-btn:hover {
+            background: #29384c;
+        }
+
+
+        .calc-btn:active {
+            transform: scale(0.94);
+        }
+
+
+        /* FUNCTION BUTTONS */
+
+        .function {
+            background: #141d29;
+            color: #aebbd0;
+        }
+
+
+        .function:hover {
+            background: #202d40;
+        }
+
+
+        /* OPERATORS */
+
+        .operator {
+            background: #263b5b;
+            color: #91baff;
+        }
+
+
+        .operator:hover {
+            background: #345075;
+        }
+
+
+        /* CLEAR */
+
+        .clear {
+            background: #572630;
+            color: #ffadb8;
+        }
+
+
+        .clear:hover {
+            background: #74303d;
+        }
+
+
+        /* EQUAL */
+
+        .equals {
+            background:
+                linear-gradient(
+                    135deg,
+                    #3979e6,
+                    #5b55e8
+                );
+
+            color: white;
+
+            font-weight: 600;
+        }
+
+
+        .equals:hover {
+            background:
+                linear-gradient(
+                    135deg,
+                    #4a87f5,
+                    #6962f4
+                );
+        }
+
+
+        /* ================================
+           HISTORY PANEL
+        ================================= */
+
+        .history-panel {
+            width: 310px;
+            min-width: 270px;
+
+            min-height: 0;
+
+            padding: 18px;
+
+            display: flex;
+            flex-direction: column;
+
+            background: rgba(14,20,30,0.98);
+
+            border:
+                1px solid rgba(255,255,255,0.08);
+
+            border-radius: 20px;
+
+            box-shadow:
+                0 25px 60px rgba(0,0,0,0.35);
+        }
+
+
+        .history-title {
+            display: flex;
+
+            align-items: center;
+            justify-content: space-between;
+
+            padding-bottom: 14px;
+
+            border-bottom:
+                1px solid rgba(255,255,255,0.07);
+        }
+
+
+        .history-title h2 {
+            font-size: 17px;
+            font-weight: 600;
+        }
+
+
+        .history-title button {
+            border: none;
+
+            background: transparent;
+
+            color: #719cff;
+
+            cursor: pointer;
+
+            font-size: 12px;
+        }
+
+
+        .history-title button:hover {
+            color: #9dbbff;
+        }
+
+
+        .history-list {
+            flex: 1;
+
+            min-height: 0;
+
+            overflow-y: auto;
+
+            padding-top: 5px;
+        }
+
+
+        .history-item {
+            padding: 13px 6px;
+
+            border-bottom:
+                1px solid rgba(255,255,255,0.06);
+
+            cursor: pointer;
+
+            transition: 0.15s;
+        }
+
+
+        .history-item:hover {
+            background:
+                rgba(255,255,255,0.04);
+
+            border-radius: 8px;
+
+            padding-left: 10px;
+        }
+
+
+        .history-expression {
+            color: #7f8b9e;
+
+            font-size: 13px;
+
+            margin-bottom: 5px;
+
+            overflow: hidden;
+
+            text-overflow: ellipsis;
+
+            white-space: nowrap;
+        }
+
+
+        .history-result {
+            color: white;
+
+            font-size: 18px;
+        }
+
+
+        .empty-history {
+            width: 100%;
+            height: 100%;
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            color: #596678;
+
+            font-size: 13px;
+        }
+
+
+        /* ================================
+           FOOTER
+        ================================= */
+
+        .footer {
+            width: 100%;
+
+            height: 22px;
+            min-height: 22px;
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            color: #536073;
+
+            font-size: 10px;
+        }
+
+
+        /* ================================
+           LIGHT MODE
+        ================================= */
+
+        body.light {
+            background:
+                linear-gradient(
+                    135deg,
+                    #dce8f8,
+                    #f3f6fa
+                );
+
+            color: #172033;
+        }
+
+
+        body.light .header {
+            background: rgba(255,255,255,0.98);
+
+            border-bottom:
+                1px solid rgba(0,0,0,0.08);
+        }
+
+
+        body.light .brand-text h1 {
+            color: #172033;
+        }
+
+
+        body.light .brand-text p {
+            color: #687386;
+        }
+
+
+        body.light .theme-button {
+            background: #e5e9ef;
+            color: #172033;
+        }
+
+
+        body.light .calculator,
+        body.light .history-panel {
+            background: rgba(255,255,255,0.97);
+
+            border:
+                1px solid rgba(0,0,0,0.08);
+
+            box-shadow:
+                0 25px 60px rgba(0,0,0,0.12);
+        }
+
+
+        body.light .display {
+            background: #eef2f7;
+
+            border:
+                1px solid rgba(0,0,0,0.06);
+        }
+
+
+        body.light .current {
+            color: #172033;
+        }
+
+
+        body.light .calc-btn {
+            background: #e4e8ee;
+            color: #172033;
+        }
+
+
+        body.light .calc-btn:hover {
+            background: #d7dce4;
+        }
+
+
+        body.light .function {
+            background: #dce1e8;
+            color: #465269;
+        }
+
+
+        body.light .operator {
+            background: #d7e5fb;
+            color: #205ebc;
+        }
+
+
+        body.light .clear {
+            background: #f0dce0;
+            color: #b5324a;
+        }
+
+
+        body.light .history-title h2,
+        body.light .history-result {
+            color: #172033;
+        }
+
+
+        body.light .history-expression {
+            color: #697386;
+        }
+
+
+        body.light .footer {
+            color: #657083;
+        }
+
+
+        /* ================================
+           RESPONSIVE
+        ================================= */
+
+        @media (max-width: 900px) {
+
+            .content {
+                gap: 12px;
+                padding: 12px;
+            }
+
+
+            .history-panel {
+                width: 280px;
+                min-width: 240px;
+            }
+
+
+            .calculator {
+                padding: 14px;
+            }
+
+
+            .buttons {
+                gap: 7px;
+            }
+
+        }
+
+
+        @media (max-width: 700px) {
+
+            html,
+            body {
+                overflow: auto;
+            }
+
+
+            .app {
+                height: auto;
+                min-height: 100vh;
+            }
+
+
+            .content {
+                flex-direction: column;
+            }
+
+
+            .calculator-area {
+                min-height: 600px;
+            }
+
+
+            .calculator {
+                min-height: 600px;
+            }
+
+
+            .history-panel {
+                width: 100%;
+                height: 250px;
+                min-height: 250px;
+            }
+
+        }
+
+
+        @media (max-width: 500px) {
+
+            .header {
+                height: 60px;
+                min-height: 60px;
+
+                padding: 0 12px;
+            }
+
+
+            .brand-text h1 {
+                font-size: 18px;
+            }
+
+
+            .brand-text p {
+                display: none;
+            }
+
+
+            .logo {
+                width: 38px;
+                height: 38px;
+            }
+
+
+            .content {
+                padding: 8px;
+            }
+
+
+            .calculator {
+                padding: 10px;
+
+                border-radius: 15px;
+            }
+
+
+            .buttons {
+                gap: 5px;
+            }
+
+
+            .calc-btn {
+                border-radius: 9px;
+                font-size: 15px;
+            }
+
+        }
+
+    </style>
+</head>
+
+
+<body>
+
+    <div class="app">
+
+
+        <!-- =================================
+             HEADER
+        ================================== -->
+
+        <header class="header">
+
+            <div class="brand">
+
+                <div class="logo">
+                    H
+                </div>
+
+                <div class="brand-text">
+
+                    <h1>
+                        Harshvardhan Calculator
+                    </h1>
+
+                    <p>
+                        Professional Scientific Calculator
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <button
+                class="theme-button"
+                onclick="toggleTheme()"
+                title="Change Theme">
+
+                ☀
+
+            </button>
+
+        </header>
+
+
+        <!-- =================================
+             MAIN CONTENT
+        ================================== -->
+
+        <main class="content">
+
+
+            <!-- CALCULATOR -->
+
+            <section class="calculator-area">
+
+                <div class="calculator">
+
+
+                    <!-- DISPLAY -->
+
+                    <div class="display">
+
+                        <div
+                            class="previous"
+                            id="previous">
+                        </div>
+
+                        <div
+                            class="current"
+                            id="current">
+
+                            0
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- BUTTONS -->
+
+                    <div class="buttons">
+
+
+                        <!-- ROW 1 -->
+
+                        <button
+                            class="calc-btn function"
+                            onclick="appendFunction('sin(')">
+
+                            sin
+
+                        </button>
+
+
+                        <button
+                            class="calc-btn function"
+                            onclick="appendFunction('cos(')">
+
+                            cos
+
+                        </button>
+
+
+                        <button
+                            class="calc-btn function"
+                            onclick="appendFunction('tan(')">
+
+                            tan
+
+                        </button>
+
+
+                        <button
+                            class="calc-btn function"
+                            onclick="appendFunction('log(')">
+
+                            log
+
+                        </button>
+
+
+                        <button
+                            class="calc-btn function"
+                            onclick="appendFunction('ln(')">
+
+                            ln
+
+                        </button>
+
+
+                        <!-- ROW 2 -->
+
+                        <button
+                            class="calc-btn function"
+                            onclick="appendFunction('sqrt(')">
+
+                            √
+
+                        </button>
+
+
+                        <button
+                            class="calc-btn function"
+                            onclick="appendFunction('π')">
+
+                            π
+
+                        </button>
+
+
+                        <button
+                            class="calc-btn function"
+                            onclick="appendOperator('^')">
+
+                            xʸ
+
+                        </button>
+
+
+                        <button
+                            class="calc-btn function"
+                            onclick="appendFunction('(')">
+
+                            (
+
+                        </button>
+
+
+                        <button
+                            class="calc-btn function"
+                            onclick="appendFunction(')')">
+
+                            )
+
+                        </button>
+
+
+                        <!-- ROW 3 -->
+
+                        <button
+                            class="calc-btn clear"
+                            onclick="clearCalculator()">
+
+                            AC
+
+                        </button>
+
+
+                        <button
+                            class="calc-btn function"
+                            onclick="deleteLast()">
+
+                            ⌫
+
+                        </button>
+
+
+                        <button
+                            class="calc-btn function"
+                            onclick="appendFunction('%')">
+
+                            %
+
+                        </button>
+
+
+                        <button
+                            class="calc-btn operator"
+                            onclick="appendOperator('/')">
+
+                            ÷
+
+                        </button>
+
+
+                        <button
+                            class="calc-btn operator"
+                            onclick="appendOperator('*')">
+
+                            ×
+
+                        </button>
+
+
+                        <!-- ROW 4 -->
+
+                        <button
+                            class="calc-btn"
+                            onclick="appendNumber('7')">
+
+                            7
+
+                        </button>
+
+
+                        <button
+                            class="calc-btn"
+                            onclick="appendNumber('8')">
+
+                            8
+
+                        </button>
+
+
+                        <button
+                            class="calc-btn"
+                            onclick="appendNumber('9')">
+
+                            9
+
+                        </button>
+
+
+                        <button
+                            class="calc-btn operator"
+                            onclick="appendOperator('-')">
+
+                            −
+
+                        </button>
+
+
+                        <button
+                            class="calc-btn function"
+                            onclick="squareNumber()">
+
+                            x²
+
+                        </button>
+
+
+                        <!-- ROW 5 -->
+
+                        <button
+                            class="calc-btn"
+                            onclick="appendNumber('4')">
+
+                            4
+
+                        </button>
+
+
+                        <button
+                            class="calc-btn"
+                            onclick="appendNumber('5')">
+
+                            5
+
+                        </button>
+
+
+                        <button
+                            class="calc-btn"
+                            onclick="appendNumber('6')">
+
+                            6
+
+                        </button>
+
+
+                        <button
+                            class="calc-btn operator"
+                            onclick="appendOperator('+')">
+
+                            +
+
+                        </button>
+
+
+                        <button
+                            class="calc-btn function"
+                            onclick="appendFunction('e')">
+
+                            e
+
+                        </button>
+
+
+                        <!-- ROW 6 -->
+
+                        <button
+                            class="calc-btn"
+                            onclick="appendNumber('1')">
+
+                            1
+
+                        </button>
+
+
+                        <button
+                            class="calc-btn"
+                            onclick="appendNumber('2')">
+
+                            2
+
+                        </button>
+
+
+                        <button
+                            class="calc-btn"
+                            onclick="appendNumber('3')">
+
+                            3
+
+                        </button>
+
+
+                        <button
+                            class="calc-btn"
+                            onclick="appendNumber('.')">
+
+                            .
+
+                        </button>
+
+
+                        <button
+                            class="calc-btn equals"
+                            onclick="calculate()">
+
+                            =
+
+                        </button>
+
+
+                        <!-- ROW 7 -->
+
+                        <button
+                            class="calc-btn"
+                            style="grid-column: span 2;"
+                            onclick="appendNumber('0')">
+
+                            0
+
+                        </button>
+
+
+                        <button
+                            class="calc-btn function"
+                            onclick="appendNumber('00')">
+
+                            00
+
+                        </button>
+
+
+                        <button
+                            class="calc-btn function"
+                            onclick="toggleSign()">
+
+                            ±
+
+                        </button>
+
+
+                        <button
+                            class="calc-btn clear"
+                            onclick="clearCalculator()">
+
+                            C
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- =================================
+                 HISTORY
+            ================================== -->
+
+            <aside class="history-panel">
+
+                <div class="history-title">
+
+                    <h2>
+                        Calculation History
+                    </h2>
+
+                    <button
+                        onclick="clearHistory()">
+
+                        Clear All
+
+                    </button>
+
+                </div>
+
+
+                <div
+                    class="history-list"
+                    id="historyList">
+
+                    <div class="empty-history">
+
+                        No calculations yet
+
+                    </div>
+
+                </div>
+
+            </aside>
+
+        </main>
+
+
+        <!-- =================================
+             FOOTER
+        ================================== -->
+
+        <footer class="footer">
+
+            Harshvardhan Calculator • Professional Edition
+
+        </footer>
+
+    </div>
+
+
+    <script>
+
+        /* ================================
+           VARIABLES
+        ================================= */
+
+        let expression = "";
+
+        let history = [];
+
+
+        const currentDisplay =
+            document.getElementById("current");
+
+        const previousDisplay =
+            document.getElementById("previous");
+
+        const historyList =
+            document.getElementById("historyList");
+
+
+        /* ================================
+           UPDATE DISPLAY
+        ================================= */
+
+        function updateDisplay() {
+
+            if (expression === "") {
+
+                currentDisplay.textContent = "0";
+
+                return;
+            }
+
+
+            currentDisplay.textContent =
+                expression
+                    .replace(/\*/g, "×")
+                    .replace(/\//g, "÷")
+                    .replace(/sqrt/g, "√");
+
+        }
+
+
+        /* ================================
+           ADD NUMBER
+        ================================= */
+
+        function appendNumber(number) {
+
+            if (number === ".") {
+
+                let lastNumber =
+                    expression.split(/[+\-*/()^]/).pop();
+
+
+                if (lastNumber.includes(".")) {
+
+                    return;
+
+                }
+
+            }
+
+
+            expression += number;
+
+            updateDisplay();
+
+        }
+
+
+        /* ================================
+           ADD OPERATOR
+        ================================= */
+
+        function appendOperator(operator) {
+
+            if (expression === "") {
+
+                if (operator === "-") {
+
+                    expression = "-";
+
+                    updateDisplay();
+
+                }
+
+                return;
+            }
+
+
+            let last =
+                expression.slice(-1);
+
+
+            if ("+-*/^".includes(last)) {
+
+                expression =
+                    expression.slice(0, -1);
+
+            }
+
+
+            expression += operator;
+
+            updateDisplay();
+
+        }
+
+
+        /* ================================
+           ADD FUNCTION
+        ================================= */
+
+        function appendFunction(value) {
+
+            expression += value;
+
+            updateDisplay();
+
+        }
+
+
+        /* ================================
+           DELETE
+        ================================= */
+
+        function deleteLast() {
+
+            expression =
+                expression.slice(0, -1);
+
+            updateDisplay();
+
+        }
+
+
+        /* ================================
+           CLEAR
+        ================================= */
+
+        function clearCalculator() {
+
+            expression = "";
+
+            previousDisplay.textContent = "";
+
+            currentDisplay.textContent = "0";
+
+        }
+
+
+        /* ================================
+           SQUARE
+        ================================= */
+
+        function squareNumber() {
+
+            if (expression === "") {
+
+                return;
+
+            }
+
+
+            expression =
+                "(" + expression + ")^2";
+
+
+            updateDisplay();
+
+        }
+
+
+        /* ================================
+           TOGGLE SIGN
+        ================================= */
+
+        function toggleSign() {
+
+            if (expression === "") {
+
+                return;
+
+            }
+
+
+            expression =
+                "-(" + expression + ")";
+
+
+            updateDisplay();
+
+        }
+
+
+        /* ================================
+           CALCULATE
+        ================================= */
+
+        function calculate() {
+
+            if (expression === "") {
+
+                return;
+
+            }
+
+
+            try {
+
+                const original =
+                    expression;
+
+
+                let result =
+                    evaluateExpression(expression);
+
+
+                if (!Number.isFinite(result)) {
+
+                    throw new Error();
+
+                }
+
+
+                result =
+                    Number(result.toFixed(10));
+
+
+                previousDisplay.textContent =
+                    original
+                        .replace(/\*/g, "×")
+                        .replace(/\//g, "÷")
+                        + " =";
+
+
+                expression =
+                    result.toString();
+
+
+                currentDisplay.textContent =
+                    expression;
+
+
+                addHistory(
+                    original,
+                    result
+                );
+
+            }
+
+            catch (error) {
+
+                currentDisplay.textContent =
+                    "Error";
+
+
+                setTimeout(() => {
+
+                    expression = "";
+
+                    previousDisplay.textContent = "";
+
+                    updateDisplay();
+
+                }, 1000);
+
+            }
+
+        }
+
+
+        /* ================================
+           EVALUATE EXPRESSION
+        ================================= */
+
+        function evaluateExpression(expr) {
+
+            expr =
+                expr
+                    .replace(/π/g, "Math.PI")
+
+                    .replace(
+                        /sqrt\(/g,
+                        "Math.sqrt("
+                    )
+
+                    .replace(
+                        /log\(/g,
+                        "Math.log10("
+                    )
+
+                    .replace(
+                        /ln\(/g,
+                        "Math.log("
+                    )
+
+                    .replace(
+                        /\^/g,
+                        "**"
+                    )
+
+                    .replace(
+                        /%/g,
+                        "/100"
+                    );
+
+
+            /* SIN */
+
+            expr =
+                expr.replace(
+                    /sin\(([^()]*)\)/g,
+
+                    "Math.sin(($1)*Math.PI/180)"
+                );
+
+
+            /* COS */
+
+            expr =
+                expr.replace(
+                    /cos\(([^()]*)\)/g,
+
+                    "Math.cos(($1)*Math.PI/180)"
+                );
+
+
+            /* TAN */
+
+            expr =
+                expr.replace(
+                    /tan\(([^()]*)\)/g,
+
+                    "Math.tan(($1)*Math.PI/180)"
+                );
+
+
+            return Function(
+                "return " + expr
+            )();
+
+        }
+
+
+        /* ================================
+           HISTORY
+        ================================= */
+
+        function addHistory(
+            exp,
+            result
+        ) {
+
+            history.unshift({
+
+                expression: exp,
+
+                result: result
+
+            });
+
+
+            if (history.length > 15) {
+
+                history.pop();
+
+            }
+
+
+            displayHistory();
+
+        }
+
+
+        /* ================================
+           DISPLAY HISTORY
+        ================================= */
+
+        function displayHistory() {
+
+            if (history.length === 0) {
+
+                historyList.innerHTML = `
+
+                    <div class="empty-history">
+
+                        No calculations yet
+
+                    </div>
+
+                `;
+
+                return;
+
+            }
+
+
+            historyList.innerHTML = "";
+
+
+            history.forEach(item => {
+
+                const div =
+                    document.createElement("div");
+
+
+                div.className =
+                    "history-item";
+
+
+                div.innerHTML = `
+
+                    <div class="history-expression">
+
+                        ${item.expression
+                            .replace(/\*/g, "×")
+                            .replace(/\//g, "÷")}
+
+                    </div>
+
+                    <div class="history-result">
+
+                        = ${item.result}
+
+                    </div>
+
+                `;
+
+
+                div.onclick = function() {
+
+                    expression =
+                        item.result.toString();
+
+
+                    previousDisplay.textContent =
+                        item.expression + " =";
+
+
+                    updateDisplay();
+
+                };
+
+
+                historyList.appendChild(div);
+
+            });
+
+        }
+
+
+        /* ================================
+           CLEAR HISTORY
+        ================================= */
+
+        function clearHistory() {
+
+            history = [];
+
+            displayHistory();
+
+        }
+
+
+        /* ================================
+           THEME
+        ================================= */
+
+        function toggleTheme() {
+
+            document.body.classList.toggle("light");
+
+
+            const button =
+                document.querySelector(".theme-button");
+
+
+            if (
+                document.body.classList.contains("light")
+            ) {
+
+                button.textContent = "🌙";
+
+            }
+
+            else {
+
+                button.textContent = "☀";
+
+            }
+
+        }
+
+
+        /* ================================
+           KEYBOARD SUPPORT
+        ================================= */
+
+        document.addEventListener(
+            "keydown",
+            function(event) {
+
+                const key =
+                    event.key;
+
+
+                /* NUMBERS */
+
+                if (
+                    !isNaN(key) ||
+                    key === "."
+                ) {
+
+                    appendNumber(key);
+
+                }
+
+
+                /* OPERATORS */
+
+                else if (
+                    ["+", "-", "*", "/"].includes(key)
+                ) {
+
+                    appendOperator(key);
+
+                }
+
+
+                /* POWER */
+
+                else if (key === "^") {
+
+                    appendOperator("^");
+
+                }
+
+
+                /* ENTER */
+
+                else if (
+                    key === "Enter" ||
+                    key === "="
+                ) {
+
+                    event.preventDefault();
+
+                    calculate();
+
+                }
+
+
+                /* BACKSPACE */
+
+                else if (key === "Backspace") {
+
+                    deleteLast();
+
+                }
+
+
+                /* ESCAPE */
+
+                else if (key === "Escape") {
+
+                    clearCalculator();
+
+                }
+
+
+                /* BRACKETS */
+
+                else if (
+                    key === "(" ||
+                    key === ")"
+                ) {
+
+                    appendFunction(key);
+
+                }
+
+            }
+        );
+
+
+        /* ================================
+           INITIAL DISPLAY
+        ================================= */
+
+        updateDisplay();
+
+    </script>
+
+</body>
+
+</html>
